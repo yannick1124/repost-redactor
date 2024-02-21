@@ -56,17 +56,17 @@ async function getPostsNoReposts(did: string) {
   return posts;
 }
 
-async function main() {
-  await agent.login({
-    identifier: BLUESKY_USERNAME,
-    password: BLUESKY_PASSWORD
-  });
+async function getPostsJson(did = BLUESKY_USERNAME) {
+  await this.login();
 
-  const posts = await getPostsNoReposts(BLUESKY_USERNAME);
+  const posts = await this.getPostsNoReposts(did);
 
-  posts.forEach(p => {
-    console.log(p);
-  })
+  return JSON.stringify(posts);
 }
 
-main();
+async function login() {
+  await this.agent.login({
+    identifier: this.BLUESKY_USERNAME,
+    password: this.BLUESKY_PASSWORD
+  });
+}

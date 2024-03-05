@@ -6,3 +6,4 @@ node_modules/
 .env.previous
 .env.vault
 .commands
+posts.json

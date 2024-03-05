@@ -1,5 +1,11 @@
 import { BskyAgent } from '@atproto/api';
+import { FeedViewPost } from '@atproto/api/dist/client/types/app/bsky/feed/defs';
+import { OutputSchema } from '@atproto/api/dist/client/types/app/bsky/feed/getAuthorFeed';
+
 import * as dotenv from 'dotenv';
+
+import React from 'react';
+import { createRoot } from 'react-dom/client';
 
 dotenv.config();
 
@@ -40,12 +46,12 @@ async function getDID(handle: string) {
  * @param did DID of a user
  * @returns posts: Object[]
  */
-async function getPostsNoReposts(did: string) {
+async function getPostsNoReposts(handle: string) {
   const { data } = await agent.getAuthorFeed({
-    actor: await getDID(did as string)
+    actor: await getDID(handle)
   });
 
-  let posts: Object[] = [];
+  let posts : FeedViewPost[] = []
 
   data.feed.forEach(p => {
     if ( p.reason?.$type != 'app.bsky.feed.defs#reasonRepost' ) {
@@ -53,20 +59,46 @@ async function getPostsNoReposts(did: string) {
     }
   });
 
+  data.feed.length = 0;
+  data.feed.push.apply(data.feed, posts);
+
   return posts;
 }
 
-async function getPostsJson(did = BLUESKY_USERNAME) {
-  await this.login();
+async function getPostsJson(handle = BLUESKY_USERNAME) {
+  const data = await getPostsNoReposts(handle);
 
-  const posts = await this.getPostsNoReposts(did);
-
-  return JSON.stringify(posts);
+  JSON.stringify(data, null, 2);
 }
 
 async function login() {
-  await this.agent.login({
-    identifier: this.BLUESKY_USERNAME,
-    password: this.BLUESKY_PASSWORD
+  await agent.login({
+    identifier: BLUESKY_USERNAME,
+    password: BLUESKY_PASSWORD
   });
 }
+
+async function logFeed() {
+  await login();
+
+  const { data } =  await agent.getAuthorFeed({
+    actor: await getDID(BLUESKY_USERNAME)
+  });
+
+  console.log(data);
+}
+
+async function logJson() {
+  await login();
+
+  console.log(await getPostsJson());
+}
+
+async function App() {
+  await (await getPostsNoReposts(BLUESKY_USERNAME)).forEach(element => {
+    
+  });
+}
+
+const container = document.getElementById('root');
+const root = createRoot(container!);

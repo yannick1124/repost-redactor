@@ -1,11 +1,18 @@
 {
-  "devDependencies": {
-    "typescript": "^5.3.3"
-  },
+  "name": "bsky-posts-no-reposts",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "main": "src/index.ts",
   "dependencies": {
     "@atproto/api": "^0.9.8",
     "atproto": "^0.0.1",
     "dotenv": "^16.4.5",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
   }
 }
